@@ -8,7 +8,41 @@ class WorkersController < ApplicationController
       format.json { render :json => @workers }
     end
     # new lines ends
+
+  def createWorker
+    nm = params[:name]
+    um = params[:username]
+    pwd = params[:password]
+    dpt = params[:department]
+    @worker = Worker.new(:name => nm,:username => um;:password => pwd;:department => dpt)
+    @worker.save
   end
+
+  def newWorker
+  end
+
+  def deleteWorker
+    id = params[:worker_id]
+    @worker = Worker.find_by_id(id)
+    if @worker.delete
+    redirect_to :controller => "workers",:action =>"selectWorker"
+  end
+
+  def editWorker
+    id = params[:worker_id]
+    @worker = Worker.find_by_id(id)
+  end
+
+  def updateWorker
+    id = params[:worker_id].to_i
+    nm = params[:name]
+    um = params[:username]
+    pwd = params[:password]
+    dpt = params[:department]
+    Worker.update(id,{:name => nm, :username => um, :password => pwd, :department => dpt})
+    redirect_to :controller => "workers",:action => "index"
+  end
+
   def login
     if params[:username] == nil
       username = password = ""
@@ -28,6 +62,7 @@ class WorkersController < ApplicationController
       redirect_to :controller => "workshops", :action => "index"
     end 
   end
+
   def logout
     cookies.signed[:id] = nil;
     redirect_to :controller => "workshops", :action => "summary"
