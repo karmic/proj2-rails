@@ -2,6 +2,8 @@
 Proj1::Application.routes.draw do
   root :to => "workshops#summary"
   match "workers" => "workers#index"
+  match "workers/create" => "workers#create"
+  mathc "workers/edit" => "workers#edit"
   match "workshops" => "workshops#index"
   match "workshops/insert" => "workshops#insert"
   match "workshops/display" => "workshops#display"

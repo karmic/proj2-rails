@@ -2,7 +2,7 @@
 development:
   adapter: postgresql
   encoding: unicode
-  database: sampledb
+  database: proj2
   pool: 5
-  username: bob
-  password: somepass
+  username: cent285man
+  password: cent285_man

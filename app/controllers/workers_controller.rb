@@ -8,7 +8,21 @@ class WorkersController < ApplicationController
       format.json { render :json => @workers }
     end
     # new lines ends
+
+  def create
+    require "digest/md5"
+    pass = Digest::MD5.hexdigest(params[:password])
+    Worker.create(:name => params[:name],
+    :username => params[:username],
+    :password => pass,
+    :department => params[:department])
   end
+
+  def edit
+    id = params[:worker_id]
+    @worker = Worker.find_by_id(id)
+  end
+
   def login
     if params[:username] == nil
       username = password = ""
@@ -28,8 +42,11 @@ class WorkersController < ApplicationController
       redirect_to :controller => "workshops", :action => "index"
     end 
   end
+
   def logout
     cookies.signed[:id] = nil;
     redirect_to :controller => "workshops", :action => "summary"
   end
 end
+end
+
