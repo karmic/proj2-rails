@@ -18,9 +18,18 @@ class WorkersController < ApplicationController
     :department => params[:department])
   end
 
-  def edit
-    id = params[:worker_id]
-    @worker = Worker.find_by_id(id)
+  def update
+    require "digest/md5"
+    pass = Digest::MD5.hexdigest(params[:password])
+    @worker = Worker.find(params[:id])
+    Worker.update_attributes(:name => params[:name],
+    :username => params[:username],
+    :department => params[:department])
+  end
+
+  def destroy
+  id = params[:id]
+  Worker.destroy(id)
   end
 
   def login
