@@ -8,28 +8,27 @@ class WorkersController < ApplicationController
       format.json { render :json => @workers }
     end
     # new lines ends
-
+  end
   def create
-    require "digest/md5"
-    pass = Digest::MD5.hexdigest(params[:password])
-    Worker.create(:name => params[:name],
-    :username => params[:username],
-    :password => pass,
-    :department => params[:department])
+   require "digest/md5"
+   pass = Digest::MD5.hexdigest(params[:password])
+   Worker.create(:name => params[:name],
+   :username => params[:username],
+   :password => pass,
+   :department => params[:department])
   end
-
-  def update
-    require "digest/md5"
-    pass = Digest::MD5.hexdigest(params[:password])
-    @worker = Worker.find(params[:id])
-    Worker.update_attributes(:name => params[:name],
-    :username => params[:username],
-    :department => params[:department])
-  end
-
   def destroy
-  id = params[:id]
-  Worker.destroy(id)
+   id = params[:id]
+   Worker.destroy(id)
+  end
+  def update
+   worker = Worker.find_by_id(params[:id])
+   require "digest/md5"
+   pass = Digest::MD5.hexdigest(params[:password])
+   worker.update_attributes(:name => params[:name],
+   :username => params[:username],
+   :password => pass,
+   :department => params[:department])
   end
 
   def login
@@ -38,24 +37,26 @@ class WorkersController < ApplicationController
     else
       username = params[:username]
       password = params[:password]
-    end
+    
     conn = ActiveRecord::Base.connection
     idString = conn.select_value("select get_id('" +
       username + "','" + password + "')")
     id = idString.to_i
     cookies.signed[:id] = id
-    if id == 1
-      redirect_to :controller => "workers", 
-        :action => "admin"
-    elsif id > 1
-      redirect_to :controller => "workshops", :action => "index"
-    end 
+    redirect_to :controller => "workers", :action => "enter"
+    end
   end
+  end
+
+  def enter
+   id = cookies.signed[:id]
+   respond_to do |format|
+   format.html { render :text => id }
+   end
 
   def logout
     cookies.signed[:id] = nil;
     redirect_to :controller => "workshops", :action => "summary"
   end
-end
 end
 
