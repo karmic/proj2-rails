@@ -37,22 +37,19 @@ class WorkersController < ApplicationController
     else
       username = params[:username]
       password = params[:password]
-    
+    end
     conn = ActiveRecord::Base.connection
     idString = conn.select_value("select get_id('" +
       username + "','" + password + "')")
     id = idString.to_i
     cookies.signed[:id] = id
-    redirect_to :controller => "workers", :action => "enter"
-    end
+    if id == 1
+      redirect_to :controller => "workers", 
+        :action => "admin"
+    elsif id > 1
+      redirect_to :controller => "workshops", :action => "index"
+    end 
   end
-  end
-
-  def enter
-   id = cookies.signed[:id]
-   respond_to do |format|
-   format.html { render :text => id }
-   end
 
   def logout
     cookies.signed[:id] = nil;
